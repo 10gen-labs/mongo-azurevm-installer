@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerFiles", "InstallerFiles\InstallerFiles.csproj", "{22AA4B44-F4B4-4B36-A9DE-6204641B84A5}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MongoDBInstVM", "MongoDBInstVM\MongoDBInstVM.wixproj", "{BFEA0600-DA77-4296-B71B-54BB7384C291}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22AA4B44-F4B4-4B36-A9DE-6204641B84A5}.Debug|x86.ActiveCfg = Debug|x86
+		{22AA4B44-F4B4-4B36-A9DE-6204641B84A5}.Debug|x86.Build.0 = Debug|x86
+		{22AA4B44-F4B4-4B36-A9DE-6204641B84A5}.Release|x86.ActiveCfg = Release|x86
+		{22AA4B44-F4B4-4B36-A9DE-6204641B84A5}.Release|x86.Build.0 = Release|x86
+		{BFEA0600-DA77-4296-B71B-54BB7384C291}.Debug|x86.ActiveCfg = Debug|x86
+		{BFEA0600-DA77-4296-B71B-54BB7384C291}.Debug|x86.Build.0 = Debug|x86
+		{BFEA0600-DA77-4296-B71B-54BB7384C291}.Release|x86.ActiveCfg = Release|x86
+		{BFEA0600-DA77-4296-B71B-54BB7384C291}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

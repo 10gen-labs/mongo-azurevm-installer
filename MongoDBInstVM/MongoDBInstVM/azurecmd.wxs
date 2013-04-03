@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+  xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <?define productName="MongoDB Installer for Windows Azure" ?>
+  <?define sourcedir="$(var.SolutionDir)InstallerFiles\bin\$(var.Configuration)\" ?>
+
+  <?define version="0.5.4" ?>
+  <?define versionedFolder="August2012" ?>
+  <?define versionedStartMenuFolder="MongoDB Installer for Windows Azure" ?>
+
+  <Product Id="c2a1552c-b3d7-4e75-a506-882f46a872fa"
+           Name="$(var.productName)"
+           Language="1033"
+           Version="$(var.version)"
+           Manufacturer="10gen Inc."
+           UpgradeCode="442370dd-7991-4e28-99f2-a7bc2d54aae2">
+
+    <Package InstallerVersion="200" Compressed="yes" Platform="x86" />
+
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A later version of MongoDB Installer for Windows Azure is already installed. Setup will now exit." />
+
+    <Icon Id="icon.ico" SourceFile="$(var.ProjectDir)\Resources\icon.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+    <Property Id="POWERSHELLVERSION">
+      <RegistrySearch Id="POWERSHELLVERSION" Root="HKLM" Key="SOFTWARE\Microsoft\PowerShell\1\PowerShellEngine" Name="PowerShellVersion" Type="raw" />
+    </Property>
+
+    <Condition Message="PowerShell 2.0 must be installed before MongoDB Installer for Windows Azure installation.">
+      <![CDATA[Installed or (POWERSHELLVERSION = "2.0")]]>
+    </Condition>
+
+    <PropertyRef Id="NETFRAMEWORK40FULL"/>
+
+    <Condition Message="This application requires .NET Framework 4.0 Full version. Please install the .NET Framework then run this installer again.">
+      <![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+    </Condition>
+    
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="TengenMongoDBSdkFolder" Name = "MongoDB">
+          <Directory Id="AzureSdkFolder" Name = "Windows Azure">
+            <Directory Id="IAASMongoFolder" Name = "MongoDBInstVM">
+              <Directory Id="VersionedFolder" Name = "$(var.versionedFolder)">
+                <Directory Id="PowerShellFolder" Name = "PowerShell"/>
+                <Directory Id="ModulesFolder" Name = "modules"/>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="AzureSdkVMMongoDBFolder" Name="$(var.versionedStartMenuFolder)"/>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="AzureSdkVMMongoDBFolder">
+      <Component Id="AzureSdkVMMongoDBShortcut" Guid="3956B8EE-EF31-48CB-9AAA-BA7B084276A9">
+        <Shortcut Id="AzureSdkVMMongoDBStartMenuShortcut"
+                  Name="MongoDB Installer for Windows Azure"
+                  Description="Windows PowerShell script for deploying MongoDB on Windows Azure Virtual Machines"
+                  Target="[SystemFolder]\WindowsPowerShell\v1.0\powershell.exe"
+                  Arguments="-NoExit -Command &quot;cd '[PowerShellFolder]'&quot;"
+                  />
+        <util:InternetShortcut Id="HelpShortcut"
+                Name="Getting Started"
+                       Target="[VersionedFolder]help.mht"/>
+        <File Id="DownloadPublishSettingsLnk" KeyPath="no" Source="media\Download PublishSettings.url" />
+        <RemoveFolder Id="AzureSdkVMMongoDBFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="SOFTWARE\Microsoft\Microsoft SDKs\WindowsAzureVMMongoDB\$(var.version)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    <Binary Id="CustomActionScript" SourceFile="Scripts\CustomAction.vbs" />
+
+    <CustomAction Id="SetPropertiesForCopyPowershellExeConfigAction"
+                  Property="CopyPowershellExeConfigAction"
+                  Value="[PowerShellFolder];[PowerShellFolder]" />
+    <CustomAction Id="CopyPowershellExeConfigAction"
+                  BinaryKey="CustomActionScript"
+                  VBScriptCall="Main"
+                  Impersonate="no"
+                  Return="check"
+                  Execute="deferred" />
+
+    <InstallExecuteSequence>
+      <Custom Action="SetPropertiesForCopyPowershellExeConfigAction" Before="InstallInitialize">Not Installed</Custom>
+      <Custom Action="CopyPowershellExeConfigAction" After="InstallFiles">Not Installed</Custom>
+    </InstallExecuteSequence>
+    
+    <Feature Id="azurecmdiaasmongodb" Title="MongoDB Installer for Windows Azure" Level="1" Description="Windows PowerShell script for deploying MongoDB to Windows Azure Virtual Machines">
+      <ComponentGroupRef Id="azurecmdfiles" />
+      <ComponentRef Id="AzureSdkVMMongoDBShortcut" />
+      <ComponentGroupRef Id="Product.Generated" />
+    </Feature>
+
+    <UIRef Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\media\License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Resources\dlgbmp.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Resources\bannrbmp.bmp" />
+  </Product>
+
+  <?include azurecmdfiles.wxi ?>
+
+</Wix>

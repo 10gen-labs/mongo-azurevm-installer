@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+$WIN\heat.exe dir <Path-to-MongoIAASInstaller-Bin-Directory> -srd -gg -g1 -cg azurecmdfiles -sfrag -dr PowerShellFolder -var var.sourcedir -o azurecmdfiles.wxi
+-->
+<Include  xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="PowerShellFolder">
+      <Component Id="cmpB9A05AF550A41831E4F983586AD2A187" Guid="D34D308A-F6C5-4ED7-B2EB-3E9BA340A67E">
+        <File Id="fil63519866A71C934FC1B7946E5BE66316" KeyPath="yes" Source="$(var.sourcedir)\check-status.js" />
+      </Component>
+      <Component Id="cmp2C92F09531466687604CC3BC6442FE80" Guid="00D50CD0-A746-4313-9214-D8726CA49FD6">
+        <File Id="filCA6B346BA81C627605F2E71F3D603A02" KeyPath="yes" Source="$(var.sourcedir)\deploy-mongo.ps1" />
+      </Component>
+      <Component Id="cmpE2F829D6D3943BADEAF0A5CBC73F277A" Guid="06AE21A6-6A38-41F6-AB0C-945AD68CB68C">
+        <File Id="fil3F17AA90E626C7AC6417FE5AC38A515F" KeyPath="yes" Source="$(var.sourcedir)\remote-setup-1.ps1" />
+      </Component>
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0226" Guid="1F144495-B13B-4119-A03F-D44568895B1E">
+        <File Id="filEACABD53D193A87237ED7C7FF3B1932D" KeyPath="yes" Source="$(var.sourcedir)\remote-setup.ps1" />
+      </Component>
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0446" Guid="1F144495-B13B-4119-A03F-D44568895678">
+        <File Id="filEACABD53D193A87237ED7C7FF3B1943E" KeyPath="yes" Source="$(var.sourcedir)\setup-iaastool.ps1" />
+      </Component>
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0556" Guid="1F144495-B13B-4119-A03F-D44568895789">
+        <File Id="filEACABD53D193A87237ED7C7FF3B1954F" KeyPath="yes" Source="$(var.sourcedir)\powershell.exe.config" />
+      </Component>
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E1F28A1667" Guid="1F144495-B13B-4119-A03F-D44568896801">
+        <File Id="filEACABD53D193A87237ED7C7FF3B1065E" KeyPath="yes" Source="$(var.sourcedir)\setup.xml" />
+      </Component>
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E2E39B2778" Guid="1F144495-B13B-4119-A03F-D44569907912">
+        <File Id="filEACABD53D193A87237ED7C7FF4C2176F" KeyPath="yes" Source="$(var.sourcedir)\imagelocations.xml" />
+      </Component>
+      <Component Id="cmp05F1C3E48275ED7C9E4EB7F3439B3888" Guid="1F166665-B13B-5220-B14E-E55669907912">
+        <File Id="filEACABD53D194B98348FE8D8EE4C2176F" KeyPath="yes" Source="$(var.sourcedir)\validate-image-name.js" />
+      </Component>
+      <Component Id="cmp6E6F8CB34AC044FDAA469D95E602A170" Guid="0DC1A487-EFB3-4297-AEC3-7EB30E84C10D">
+        <File Id="filEC4F6FCC1A014782B5626D9419F2B8BE" KeyPath="yes" Source="$(var.sourcedir)\init-storage.js" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="VersionedFolder">
+      <Component Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0336" Guid="1F144495-B13B-4119-A03F-D44568895C2F">
+        <File Id="filEACABD53D193A87237ED7C7FF3B1943F" KeyPath="yes" Source="$(var.sourcedir)\help.mht" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+  <Fragment>
+    <ComponentGroup Id="azurecmdfiles">
+      <ComponentRef Id="cmpB9A05AF550A41831E4F983586AD2A187" />
+      <ComponentRef Id="cmp2C92F09531466687604CC3BC6442FE80" />
+      <ComponentRef Id="cmpE2F829D6D3943BADEAF0A5CBC73F277A" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0226" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0446" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0336" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E1F28A0556" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E1F28A1667" />
+      <ComponentRef Id="cmp05F1C3E48264FC6B8D3DA6E2E39B2778" />
+      <ComponentRef Id="cmp05F1C3E48275ED7C9E4EB7F3439B3888" />
+      <ComponentRef Id="cmp6E6F8CB34AC044FDAA469D95E602A170" />
+    </ComponentGroup>
+  </Fragment>
+</Include>

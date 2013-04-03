@@ -1,0 +1,36 @@
+<DeploymentModel  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Parameters>
+    <Parameter Name="ServiceModel" Value="iaas"></Parameter>
+    <Parameter Name="Subscription" Value="testSubscription"></Parameter>
+    <Parameter Name="VMCount" Value="3"></Parameter>
+    <Parameter Name="DomainName" Value="mongooneclick" Required="yes"></Parameter>
+    <Parameter Name="WinRMImage" Value="WIN2K8-R2-WINRM"></Parameter>
+    <Parameter Name="Password" Value="abcXYZ123"></Parameter>
+    <Parameter Name="Region" Value="Windows Azure Preview"></Parameter>
+    <Parameter Name="MongoDBIaaSScriptPath" Value="C:\::ProgramFiles::\MongoDB\Windows Azure\IaaS\June2012\PowerShell\deploy-mongo.ps1"></Parameter>
+    <Parameter Name="StorageAccountName" ValuePrefixRef="DomainName" ValueSuffix="stg"></Parameter>
+    <Parameter Name="DeploymentName" ValuePrefixRef="DomainName" ValueSuffix="deploy"></Parameter>
+    <Parameter Name="DeploymentOption" Value="Production"></Parameter>
+    <Parameter Name="PublishSettingsPath" Value=""></Parameter>
+    <Parameter Name="PublishSettingsFilePath" Value=""></Parameter>
+    <Parameter Name="ReplicaSetName" Value="rs"></Parameter>
+    <Parameter Name="MongoDBOneClickSetupPath" Value="http://peston.blob.core.windows.net/mongo-one-click/MongoIAASOneClick.msi"></Parameter>
+    <Parameter Name="MongoDBOneClickName" Value="MongoDB IaaS OneClick"></Parameter>
+  </Parameters>
+  <Steps>
+    <Step Type="PS1" Command="get-and-install-msi.ps1" Message="Installing Mongo-IaaS OneClick Installer">
+      <CommandParam Name="" ParameterName="MongoDBOneClickSetupPath" />
+      <CommandParam Name="" ParameterName="MongoDBIaaSScriptPath" />
+      <CommandParam Name="" ParameterName="MongoDBOneClickName" />
+    </Step>
+    <Step Type="PS1" Command="C:\Program Files\MongoDB\Windows Azure\IaaS\June2012\PowerShell\deploy-mongo.ps1" Message="Executing Deploy-Mongo PS Script">
+      <CommandParam Name="" ParameterName="VMCount" />
+      <CommandParam Name="" ParameterName="DomainName" />
+      <CommandParam Name="" ParameterName="WinRMImage" />
+      <CommandParam Name="" ParameterName="Password" />
+      <CommandParam Name="" ParameterName="Region" />
+      <CommandParam Name="" ParameterName="PublishSettingsFilePath" />
+      <CommandParam Name="" ParameterName="ReplicaSetName" />
+    </Step>
+  </Steps>
+</DeploymentModel>
