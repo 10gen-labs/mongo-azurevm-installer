@@ -6,16 +6,16 @@
   <?define productName="MongoDB Installer for Windows Azure" ?>
   <?define sourcedir="$(var.SolutionDir)InstallerFiles\bin\$(var.Configuration)\" ?>
 
-  <?define version="0.5.4" ?>
-  <?define versionedFolder="August2012" ?>
+  <?define version="0.6.1" ?>
+  <?define versionedFolder="April2013" ?>
   <?define versionedStartMenuFolder="MongoDB Installer for Windows Azure" ?>
 
-  <Product Id="c2a1552c-b3d7-4e75-a506-882f46a872fa"
+  <Product Id="D1BEFD43-292B-40DF-BB33-124199FDF986"
            Name="$(var.productName)"
            Language="1033"
            Version="$(var.version)"
            Manufacturer="10gen Inc."
-           UpgradeCode="442370dd-7991-4e28-99f2-a7bc2d54aae2">
+           UpgradeCode="3A976E33-B298-4877-A170-1AC9BFCBA72C">
 
     <Package InstallerVersion="200" Compressed="yes" Platform="x86" />
 
@@ -95,7 +95,6 @@
     <Feature Id="azurecmdiaasmongodb" Title="MongoDB Installer for Windows Azure" Level="1" Description="Windows PowerShell script for deploying MongoDB to Windows Azure Virtual Machines">
       <ComponentGroupRef Id="azurecmdfiles" />
       <ComponentRef Id="AzureSdkVMMongoDBShortcut" />
-      <ComponentGroupRef Id="Product.Generated" />
     </Feature>
 
     <UIRef Id="WixUI_Minimal" />

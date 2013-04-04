@@ -43,9 +43,9 @@ $npmpath += "\nodejs\npm.cmd";
 # Path to IAAS Tool global command file
 $nodeIAASToolScriptPath = $env:APPDATA + "\npm\azure.cmd";
 # Path to IAAS Tool lib directory
-$nodeIAASToolLibPath = $env:APPDATA + "\npm\node_modules\azure\lib";
+$nodeIAASToolLibPath = $env:APPDATA + "\npm\node_modules\azure-cli\node_modules\azure\lib";
 # Path to IAAS Tool azure.js file
-$nodeIAASToolAzureJS = $env:APPDATA + "\npm\node_modules\azure\bin\azure.js";
+$nodeIAASToolAzureJS = $env:APPDATA + "\npm\node_modules\azure-cli\bin\azure.js";
 # Path to IAAS Tool configuration and certificate files
 $nodeIAASToolConfigPath = (Join-Path -Path $env:HOMEDRIVE -ChildPath $env:HOMEPATH) + "\.azure\";
 # iaas tool management certificate name
