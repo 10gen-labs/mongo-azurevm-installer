@@ -1,5 +1,5 @@
 <#
- Copyright 2010-2011 10gen Inc.
+ Copyright 2010-2013 10gen Inc.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 $global:ErrorActionPreference = "Stop"
 $drive = "C:\"
-$mongodbDownloadUrl = "http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.4.1.zip"
+$mongodbDownloadUrl = "http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.4.2.zip"
+$opLogSizeInMB = 100
 
 $mongodbService = "MongoDB2"
 $serviceStartRetry = 5
@@ -32,10 +33,10 @@ $mongodReplInit = Join-Path $setupScriptsTarget "replica-init.cmd"
 <# 
     $initTask holds the content of the startup script to initialize the replicaset. 
     This script will be executed via task scheduler. The replicaset is intialized 
-    by passing the joson file containing the IP addresses of nodes in the replicaset. 
+    by passing the json file containing the IP addresses of nodes in the replicaset. 
     This script will be scheduled to execute in every one minute until the intialization 
     succeeded. The result of each execution of mongo replica initialize command will be
-    stored in a file named ReplicaSetLog<time>.txt. Overall excution log will be stored
+    stored in a file named ReplicaSetLog<time>.txt. Overall execution log will be stored
     in replica-init-log.txt.
 #>
 $initTask = '@echo off' + "`r`n"
@@ -66,7 +67,7 @@ $initTask += ')' + "`r`n"
 $initTask += 'echo "Found replicalog with error message rerunning the initialization" >> %logfile%' + "`r`n"
 $initTask += ':runcommand' + "`r`n"
 $initTask += 'echo "running command" >> %logfile%' + "`r`n"
-$initTask += '%~dp0\..\MongoDBBinaries\bin\mongo.exe %~dp0\initialize.json > %~dp0\replicalog.txt' + "`r`n"
+$initTask += '%~dp0\..\MongoDBBinaries\bin\mongo.exe --port <MONGOPORT> %~dp0\initialize.json > %~dp0\replicalog.txt' + "`r`n"
 $initTask += ':end' + "`r`n"
 $initTask += 'echo "Exiting the script" >> %logfile%' + "`r`n"
 
@@ -76,7 +77,7 @@ $initTask += 'echo "Exiting the script" >> %logfile%' + "`r`n"
 #>
 
 $thisMongoPort = $null
-$monogPorts = @();
+$mongoPorts = @();
 $runInit = $False;
 
 $hasReplica = $True;
@@ -96,7 +97,7 @@ foreach ($arg in $args)
         $rsInitCmd += ", host:"
         $rsInitCmd += "'" + $arg + "'"
         $rsInitCmd += "}, "
-        $monogPorts += ($arg.split(":"))[1]
+        $mongoPorts += ($arg.split(":"))[1]
 
     } else {
         $parts = $arg.split(":")
@@ -249,11 +250,11 @@ function Install-MongoService {
     logStatus ("Installing Mongo as service " + $mongodbService )
     $mongoLogFile = Join-Path $mondodbLog "Log.log"
     if ($hasReplica) {
-        logStatus ("$mongodExe --replSet $replica --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --install")
-        & $mongodExe --replSet $replica --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --install
+        logStatus ("$mongodExe --replSet $replica --oplogSize $opLogSizeInMB --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --smallfiles --noprealloc --install")
+        & $mongodExe --replSet $replica --oplogSize $opLogSizeInMB --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --smallfiles --noprealloc --install
     } else {
-        logStatus ("$mongodExe --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --install")
-        & $mongodExe --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --install
+        logStatus ("$mongodExe --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --smallfiles --noprealloc --install")
+        & $mongodExe --port $bindPort --dbpath $mondodbData --logpath  $mongoLogFile --serviceName $mongodbService --serviceDisplayName $mongodbService --smallfiles --noprealloc --install
     }
 
     If ($lastexitcode -ne 0)
@@ -307,9 +308,10 @@ function Install-MongoService {
 
 logStatus "Start with setup"
 Download-Binaries
+$initTask.Replace("<MONGOPORT>", $thisMongoPort)
 $initTask | Out-File (Join-Path $setupScriptsTarget "replica-init.cmd") -encoding ASCII
 logStatus "Adding firewall exception for mongo-ports"
-foreach ($mongoPort in $monogPorts) {
+foreach ($mongoPort in $mongoPorts) {
     &netsh advfirewall firewall add rule name="MongoDB-$mongoPort (TCP-In)" dir=in action=allow service=any enable=yes profile=any localport=$mongoPort protocol=tcp
 }
 
@@ -333,7 +335,7 @@ if ($runInit -and $hasReplica) {
     $search = $null
     do {
         try {
-            $initResult = & $mongoExe $initCmdFile 2>&1
+            $initResult = & $mongoExe --port $thisMongoPort $initCmdFile 2>&1
             $initResult
             $search = $initResult | select-string 'already initialized'
            if ($search -ne $null) {
@@ -342,7 +344,7 @@ if ($runInit -and $hasReplica) {
            }
         } catch [Exception]
         {
-           $_.Exception.GetType().FullName
+           logErr $_.Exception.ToString()
            # force retry
            $initResult = 'err'
         }
@@ -358,7 +360,7 @@ if ($runInit -and $hasReplica) {
                 logStatus2 "Retrying to initialize replicaset #$initRetry"
             } else {
                 logErr "Failed to initialize replica-set after $maxInitRetry, scheduling a task for replica-init and exiting"
-                &schtasks /CREATE /TN "replica-init" /SC minute /MO 1 /RL HIGHEST /TR $mongodReplInit /F
+                &schtasks /CREATE /TN "replica-init" /SC minute /MO 1 /RL HIGHEST /TR $mongodReplInit /F /RU "SYSTEM"
                 break;
             } 
         } else {
@@ -366,10 +368,5 @@ if ($runInit -and $hasReplica) {
             break;
         }
     } while ($True);
-} else {
-    if ($hasReplica) {
-        &schtasks /CREATE /TN "replica-init" /SC minute /MO 1 /RL HIGHEST /TR $mongodReplInit /F
-    }
 }
-
 logStatus "Done with setup"
