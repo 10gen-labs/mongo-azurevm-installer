@@ -1,4 +1,4 @@
-' Copyright 2010-2011 10gen Inc.
+' Copyright 2010-2013 10gen Inc.
 '
 ' Licensed under the Apache License, Version 2.0 (the "License");
 ' you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 ' See the License for the specific language governing permissions and
 ' limitations under the License.
 '/
+
 Function Main()
     Dim properties, powerShellFolder, powerShellPathWow64, powerShellPath32
     properties = Split(Session.Property("CustomActionData"), ";", -1, 1)

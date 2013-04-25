@@ -16,7 +16,7 @@
 
 $global:ErrorActionPreference = "Stop"
 $drive = "C:\"
-$mongodbDownloadUrl = "http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.4.2.zip"
+$mongodbDownloadUrl = "http://downloads.mongodb.org/win32/mongodb-win32-x86_64-2008plus-2.4.3.zip"
 $opLogSizeInMB = 100
 
 $mongodbService = "MongoDB2"
