@@ -696,7 +696,7 @@ $CONNECT = "";
 While ($i -lt (3389 + $NODECOUNT)) 
 {
     $VMNAME = $VMNAMEPREFIX + "-" + $i
-    logStatus "vm create $DNSPREFIX $IMG $USER $PASSWORD -r $i --vm-name $VMNAME -l '$LOCATION'  $CONNECT"
+    logStatus "vm create $DNSPREFIX $IMG $USER ******* -r $i --vm-name $VMNAME -l '$LOCATION'  $CONNECT"
     & $nodejsPath $nodeIAASToolAzureJS vm create $DNSPREFIX $IMG $USER $PASSWORD -r $i --vm-name $VMNAME -l "$LOCATION"  $CONNECT
     If ($lastexitcode -ne 0)
     {
