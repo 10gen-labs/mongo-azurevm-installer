@@ -42,10 +42,14 @@ $npmpath += "\nodejs\npm.cmd";
 
 # Path to IAAS Tool global command file
 $nodeIAASToolScriptPath = $env:APPDATA + "\npm\azure.cmd";
-# Path to IAAS Tool lib directory
-$nodeIAASToolLibPath = $env:APPDATA + "\npm\node_modules\azure-cli\node_modules\azure\lib";
+# Path to IAAS Tool base directory
+$nodeIAASToolBasePath = $env:APPDATA + "\npm\node_modules\azure-cli\";
 # Path to IAAS Tool azure.js file
-$nodeIAASToolAzureJS = $env:APPDATA + "\npm\node_modules\azure-cli\bin\azure.js";
+$nodeIAASToolAzureJS = $nodeIAASToolBasePath + "\bin\azure.js";
+# IAAS node library path
+$nodeIAASToolLibPath = $nodeIAASToolBasePath + "\lib"
+# IAAS node service management path
+$nodeIAASToolSvcMgmtPath = $nodeIAASToolBasePath + "\node_modules\azure\lib"
 # Path to IAAS Tool configuration and certificate files
 $nodeIAASToolConfigPath = (Join-Path -Path $env:HOMEDRIVE -ChildPath $env:HOMEPATH) + "\.azure\";
 # iaas tool management certificate name
@@ -636,7 +640,7 @@ finally
 
 logStatus "Validating image '$IMG'"
 $PEMFILE = $nodeIAASToolConfigPath + $mgmtCertificate
-& $nodejsPath validate-image-name.js lib=$nodeIAASToolLibPath pem=$PEMFILE s=$subscriptionID imagename=$IMG host=$serHost
+& $nodejsPath validate-image-name.js lib=$nodeIAASToolSvcMgmtPath pem=$PEMFILE s=$subscriptionID imagename=$IMG host=$serHost
 If ($lastexitcode -eq 1)
 {
     logErr "Image validation failed"
@@ -752,7 +756,7 @@ While ($i -lt (3389 + $NODECOUNT))
 # -----------------------------------------------Check VMs status----------------------------------------------------------
 logStatus "Checking VM(s) Status"
 $PEMFILE = $nodeIAASToolConfigPath + $mgmtCertificate
-& $nodejsPath check-status.js lib=$nodeIAASToolLibPath pem=$PEMFILE s=$subscriptionID dnsprefix=$DNSPREFIX user=$USER password=$PASSWORD remoteport=5985 mongoports=$mongoPorts replica=$REPLICASETNAME host=$serHost
+& $nodejsPath check-status.js lib=$nodeIAASToolSvcMgmtPath pem=$PEMFILE s=$subscriptionID dnsprefix=$DNSPREFIX user=$USER password=$PASSWORD remoteport=5985 mongoports=$mongoPorts replica=$REPLICASETNAME host=$serHost
 If ($lastexitcode -ne 0)
 {
     logErr "Status Check failed"

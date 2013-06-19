@@ -23,8 +23,8 @@
   <?define productName="MongoDB Installer for Windows Azure" ?>
   <?define sourcedir="$(var.SolutionDir)InstallerFiles\bin\$(var.Configuration)\" ?>
 
-  <?define version="0.6.1" ?>
-  <?define versionedFolder="April2013" ?>
+  <?define version="0.7" ?>
+  <?define versionedFolder="June2013" ?>
   <?define versionedStartMenuFolder="MongoDB Installer for Windows Azure" ?>
 
   <Product Id="D1BEFD43-292B-40DF-BB33-124199FDF986"

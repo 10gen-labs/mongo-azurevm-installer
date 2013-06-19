@@ -124,10 +124,10 @@ function readFromFile(fileName) {
 };
 
 //***************************** Check for Status *******************************************************
-var azure = require(input['lib'].value + '/azure');
-var cli = require(input['lib'].value + '/cli/cli');
-var utils = require(input['lib'].value + '/cli/utils');
-var blobUtils = require(input['lib'].value + '/cli/blobUtils');
+var azure = require(input['lib'].value + '/../node_modules/azure/lib/azure');
+var cli = require(input['lib'].value + '/cli');
+var utils = require(input['lib'].value + '/util/utils');
+var blobUtils = require(input['lib'].value + '/util/blobUtils');
 
 param["host"] = input['host'].value
 
@@ -163,6 +163,8 @@ utils.getOrCreateBlobStorage(cli, svcMgmtChannel, input['location'].value, null,
                 progress = cli.progress('Creating image container vm-images if not exists');
                 blobService.createContainerIfNotExists('vm-images', null, function(error, result) {
                     progress.end();
+                    logStatus(error);
+                    logStatus(result);
                     if (error) {
                         logErr("Creation of image container failed");
                         process.exit(1);
