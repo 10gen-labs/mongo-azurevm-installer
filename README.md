@@ -5,6 +5,8 @@ MongoDB Installer for Windows Azure Virtual Machines is a tool to deploy
 MongoDB to Windows Azure Virtual Machines. It currently can only be used
 to deploy to Windows virtual machines on Windows Azure.
 
+**Note** - This installer is not to be used for creating production deployments.
+
 Prerequisites
 -------------
 
